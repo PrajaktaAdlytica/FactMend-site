@@ -1,0 +1,192 @@
+[
+  {
+    "route": "/",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/demo",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/stack-fit",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/contact",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/why-memory-governance",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/products",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/resources",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/platform",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/lifecycle",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/solutions",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/about",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/assessment",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/request-demo",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/use-cases",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/architecture",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/evaluation",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/reset-password",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/trust",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/sign-in",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/pricing",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/company",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/legal/privacy",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/legal/terms",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/solutions/privacy-engineering",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/solutions/ai-platforms",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/resources/deletion-destination-checklist",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/resources/memory-data-dictionary",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/resources/sandbox-evaluation-protocol",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/products/memory-review",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/products/memory-report",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/products/memory-signal",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/products/memory-proof",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/products/memory-desk",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/demo/exports",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/demo/data-dictionary",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/demo/memories",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/demo/memories/c-012",
+    "status": 200,
+    "matchesPrerender": true
+  },
+  {
+    "route": "/demo/receipts/erase-c-012",
+    "status": 200,
+    "matchesPrerender": true
+  }
+]

@@ -1,0 +1,14 @@
+# Dependencies and generated build output
+website/node_modules/
+website/dist/
+website/.DS_Store
+
+# Local environment and OS files
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# Temporary QA exports
+website/qa/motion-frames/
+website/qa/faster-cloud-frames/

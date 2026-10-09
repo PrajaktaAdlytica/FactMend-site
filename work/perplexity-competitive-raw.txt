@@ -1,0 +1,319 @@
+# Agent-memory governance: official-documentation evidence matrix
+
+**As of October 8, 2026, Factmend’s strongest defensible position is per-destination verification of corrections and erasure—not a claim that memory products lack native delete.** Every named memory product below documents a way to remove at least some data. The harder problem is establishing *which* source, derived fact, shared summary, index, revision, export, or backup was affected, then recording what was actually checked. In particular, “expired,” “forgotten,” “invalidated,” and “deleted” have different documented meanings.[web:167][web:85][web:114][web:230]
+
+**Reading rule:** “Unknown” means the cited primary documentation does not establish the stated outcome; it is **not** evidence that a feature or protection is absent. Product benchmark results are evidence of the vendor’s evaluation method, not independently verified governance or erasure results.
+
+| Product / deployment | Tenant/user and purpose scoping | Provenance, history and correction | Retention / expiration | Delete granularity | Downstream, index and backup erasure caveats | Export / portability and evaluation |
+|---|---|---|---|---|---|---|
+| **Mem0 Platform / OSS** | Platform writes and filters use `user_id`, `agent_id`, `app_id`, `run_id` and metadata; the docs propose `app_id` for tenant separation and metadata categories for finer use. **Important:** default extraction attributes a fact to *either* user or agent, so filtering for both with `AND` can miss those facts. Treat purpose labels and application authorization as an implementation design, not a documented automatic purpose-policy engine.[web:17] | `update` changes memory text/metadata and adjusts indexes; the [history API](https://docs.mem0.ai/api-reference/memory/history-memory) documents `ADD`, `UPDATE`, `DELETE`, prior/new text and conversation `input`. Separately, Mem0 describes **ADD-only automatic extraction**: changed information can leave older facts alongside newer ones unless explicitly corrected or removed. Whether history remains retrievable *after* memory deletion is unknown from that API page.[web:158][web:157][web:19] | [`expiration_date`](https://docs.mem0.ai/platform/features/memory-expiration) is **not erasure**: “Nothing is deleted.” Expired records are normally omitted from `search`/`get_all`, but remain available through `get(id)` and optional expired-result retrieval. A later delete must be scheduled for a hard retention deadline.[web:167] | `delete(memory_id)`, `batch_delete` of up to 1,000 IDs, and filtered `delete_all` by entity or metadata are documented. The guide says to confirm the response and search again; wildcard scopes require care.[web:156][web:23] | The described architecture includes vector, graph/entity and SQL-history stores; the cited delete guide does **not** establish erasure timing or independent verification across every derived store or backup. Do not turn that uncertainty into a claim that native delete is absent. The history schema itself can contain old text and conversation input, making history handling an explicit diligence question.[web:157][web:156][web:19] | Platform has filtered, schema-driven [export jobs](https://docs.mem0.ai/platform/features/memory-export); OSS lacks that *Platform export feature*, although both have `get_all`. Downloadable exports expire after seven days. Mem0 publishes a reproducible evaluation framework for recall, latency and tokens; its published scores reflect the managed platform and are **not** erasure tests.[web:20][web:93][web:105] |
+| **Google Vertex AI Agent Engine Memory Bank** | Memories carry an arbitrary scope, such as `{user_id, session_id}`; [`RetrieveMemories`](https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/fetch-memories) requires an **exact** scope match, and scope is immutable. Scope-key customization can constrain extraction topics—useful for intended-purpose design. Scope-based IAM Conditions exist, **but `ListMemories` does not support IAM Conditions** and requires an unconditional listing grant.[web:212][web:86][web:215] | Direct create/update/delete and generated consolidation are documented. Default-on immutable [`MemoryRevision`](https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/revisions) snapshots support inspection and rollback; generated revisions can show intermediate extracted memories and optional source-identifying labels. The page does **not** establish that revisions contain the complete source transcript. These are genuine native correction/history facilities.[web:33][web:89] | Memory TTL is optional: without configuration or a manual expiration, memories do not automatically expire; after configured expiration they become unavailable and are deleted. **Revision** TTL is separate and defaults to **365 days**; revisions can instead be disabled or assigned another TTL.[web:86][web:85] | Delete one memory by resource name. Criteria-based [`purge`](https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/quickstart-api) accepts system/metadata filters, offers a non-executing preview (`force=False`), and returns `purge_count`; Google illustrates `scope.user_id` purging. Generation may also remove contradictory memories.[web:214][web:32] | A deleted memory returns 404, **but its child revisions remain inspectable and rollback-capable for up to 48 hours** after parent deletion; the latest deletion revision has an empty fact. The cited Memory Bank pages do not establish backup erasure or downstream copies. A 404 therefore proves less than irreversible eradication.[web:85] | `ListMemories` and exact-scope retrieval support enumeration and application-managed extraction; a dedicated bulk-export guarantee is **unknown** from the cited pages. Google describes Agent Platform Example Store/Evaluation Service, but the Memory Bank overview gives no Memory Bank-specific erasure-evaluation workflow.[web:212][web:90] |
+| **Zep managed Context Graphs, v3** | Project, user/thread and shared `graph_id` boundaries are documented. Zep advises deriving IDs from authenticated application state. Enterprise-only ABAC policies can restrict API-key actions and source classes using projected episode metadata; this is more specific than a mere marketing claim of “governance.” The application still authorizes external actions.[web:204][web:275][web:270] | Facts link to source episodes. `valid_at`/`invalid_at` describe a fact’s **derived temporal validity, not its truth or data-retention deadline**. New evidence can invalidate an old edge; an individual fact can be removed by deleting its edge. Source references and API/audit logs offer useful provenance surfaces.[web:202][web:180][web:265] | The reviewed v3 security and graph-deletion guides do **not** establish a universal memory TTL or backup-retention schedule. `expired_at` is the time Zep learned a fact was false—not proof that stored data expired.[web:180][web:275] | Documented APIs delete an edge, node, episode or thread; Zep also documents user and shared-graph deletion. This is **not** a product without native delete.[web:114][web:115] | Exceptionally concrete warning: deleting an episode **does not regenerate shared node names or summaries**, where episode information may remain; shared edges/nodes survive, a user entity node survives episode deletion, and deleting an invalidating episode does not revalidate its fact. Verify resulting graph and retrieved context, not just the episode response. Backup-specific erasure remains unknown from these guides.[web:114][web:275] | Search/list APIs expose graph material for application-managed extraction; a guaranteed complete, portable graph-export format is **unknown** from the reviewed pages. Zep’s [evaluation harness](https://help.getzep.com/evaluate-zep-for-your-use-case) scores context completeness and answer accuracy, not erasure. Enterprise governance claims should be distinguished from the specific ABAC, provenance and log mechanisms documented above.[web:180][web:201][web:270] |
+| **Graphiti open source, self-operated** | `group_id` namespaces episodes and graph artifacts; operation and storage choices remain the operator’s responsibility. Zep explicitly distinguishes Graphiti’s **self-managed** governance from its managed service’s policies, logs and deployment controls.[web:6][web:200] | Episode-based provenance and temporal fact invalidation are documented. Graphiti CRUD exposes entity/edge reads and saves; these are graph operations, not an independently established end-to-end correction workflow for every application copy.[web:172][web:120] | A platform-wide retention/backup policy is **operator-defined or unknown** from the reviewed Graphiti guides; do not transfer Zep-managed policy claims to this deployment.[web:200] | CRUD documents entity/edge `delete`, `delete_by_uuids` and node `delete_by_group_id`; its MCP-server guide documents episode deletion and group management. Check the particular Graphiti version and backing driver used.[web:120][web:110] | Verify surviving linked nodes/edges and any external graph database, index and snapshots separately. Neo4j, a documented Graphiti backend, has restorable database backups; deleting from a live graph alone does not demonstrate a historical backup was changed.[web:178][web:145] | Query/CRUD access and operator-managed database migration are documented; a universal Graphiti portable export or governance-evaluation guarantee is **unknown** from the cited guides. The Zep managed evaluation harness should not be represented as a Graphiti-native erasure test.[web:120][web:200][web:201] |
+| **Letta: legacy V1 memory and newer Agent SDK MemFS** | V1 memory blocks and passages are addressed by agent/block/passage IDs; blocks **can be shared across agents**. The newer Agent SDK stores agent-owned memory in git-backed MemFS and supports shared repositories. The [SDK comparison](https://docs.letta.com/v1-sdk) explicitly says V1 does **not** provide MemFS/git-tracked memory: do not combine the two histories into one claimed API.[web:61][web:134][web:245] | V1 block `value` updates **replace the whole value**; concurrent changes are last-write-wins. Developers can manage archival passages via SDK, while conversation search can retrieve original messages. Agent SDK MemFS edits become memory when committed and pushed. Purpose-tag governance and a V1 block-revision/undo API are **unknown** from these pages.[web:61][web:56][web:134] | No general memory TTL is established in the reviewed block, archival and MemFS guides. Local-mode state is the operator’s backup responsibility; signed-in agents can be cloud-backed.[web:61][web:56][web:242] | V1 APIs delete an archival passage or agent; deleting a block removes it from **all** attached agents, whereas detaching it from one agent **does not delete the block**. These are materially different erasure actions.[web:59][web:51][web:61] | Check all agents sharing a block, message history, attached folders/archives and the selected local/cloud or git backup arrangement before attesting erasure. The reviewed docs do not establish one operation that proves removal across those destinations.[web:61][web:56][web:134][web:242] | V1-era [AgentFile `.af`](https://docs.letta.com/v1-sdk/concepts/agent-file) import/export includes message history and blocks; the page says archival passages are **planned**, so do not promise their inclusion. Secrets export as `null`. Letta evals can grade block persistence, not cross-store deletion; Agent SDK git portability is a **different** mechanism.[web:237][web:127][web:134] |
+| **Supermemory: v5 documents; distinct v4 extracted-memory APIs** | In v5, each call targets one URL-path `namespace`, with examples per user or organization/user; metadata filters also apply to search, list and profile. `taskType: "memory"` extracts facts/profile/graph, whereas `"superrag"` indexes chunks without those steps—an actual documented processing-purpose switch, **not** a documented authorization policy.[web:41][web:42] | v5 stable document IDs support incremental ingest; `documents.update()` replaces content and triggers full reprocessing. Search can attach a source document. **Separately, v4** `PATCH /v4/memories` creates a new extracted-memory version; `POST /v4/memories/list` returns history and `documentIds`. Do not silently treat these as v5 endpoints.[web:42][web:45][web:230][web:227] | Search normally excludes forgotten memories and those past `forgetAfter`; this establishes retrieval behavior, **not physical deletion**. The v4 list schema includes `forgetAfter` and `forgetReason`.[web:45][web:227] | v5 `documents.delete(namespace,{ids})` deletes specified documents and `namespaces.delete(namespace)` deletes the namespace’s content; its guide calls these permanent, unrecoverable deletes. In contrast, v4 `DELETE /v4/memories` **soft-deletes** an extracted memory (`isForgotten=true`, retained in the database); v4 semantic bulk-forget has preview and exact-ID modes.[web:42][web:230] | A v5 write can create chunks, embeddings, extracted facts, profile and graph links. The cited document-deletion guide calls deletion permanent but does **not** specify per-derived-artifact or backup erasure evidence. Conversely, v4 forgetting explicitly preserves the memory. Test both retrieval and derived-context surfaces; backup treatment remains unknown.[web:42][web:230] | v5 list/get provide application-managed enumeration; the v4 history endpoint exposes source IDs. A complete portable export guarantee is **unknown** from these pages. Vendor [MemoryBench](https://supermemory.ai/docs/memorybench/overview) evaluates ingest→search→answer accuracy, latency and tokens across providers, not privacy erasure.[web:41][web:227][web:229] |
+| **Qdrant, self-hosted vector database** | Documented shared-collection tenancy uses a tenant payload field and **explicit query filter**; alternatives include dedicated/tiered shards. `is_tenant=true` improves storage organization; it is not a substitute for enforcing authenticated tenant/purpose filters in the application.[web:151] | Points carry IDs, vectors and payload; the cited point API permits retrieval/scroll. Source IDs, correction history and purpose labels must be modeled by the operator rather than assumed from the point API.[web:72] | An automatic per-memory retention policy is **unknown** from the reviewed point and multitenancy guides; implement and test the required schedule separately.[web:72][web:151] | [`points/delete`](https://qdrant.tech/documentation/manage-data/points/) accepts IDs **or a payload filter**. Mutations are asynchronous unless requested with `wait=true`; mere `acknowledged` is not `completed`. Retrieve by ID or scroll with the same filter to test the live collection.[web:72] | A [collection snapshot](https://qdrant.tech/documentation/operations/snapshots/) contains **all points and payloads** and can restore earlier state. There are APIs to delete individual collection or full-storage snapshots, but no cited guarantee that deleting live points scrubs existing snapshots, separately managed backups or exported files.[web:184] | Scroll/point retrieval and downloadable/restorable snapshots provide data movement. The pgvector-style recall benchmarks or application-level erasure evaluation are **not** established as Qdrant-native by these cited guides.[web:72][web:184] |
+| **Weaviate, self-hosted vector database** | Multitenant collections allocate tenant shards; object deletion requires collection and tenant. Properties and filters can carry application purpose; the cited data model does not itself certify application-purpose authorization.[web:251][web:69] | Object update/delete exist. A built-in source-conversation provenance or correction-history record is **unknown** from the cited object/data guides; retain application source IDs if required.[web:69][web:251] | Object TTL is configurable, **but setting TTL alone does not delete objects**: the background deletion schedule is empty by default and must be enabled. Expired objects can be excluded from queries pending deletion.[web:251] | Delete by object ID or filter; delete a tenant to delete its shard and objects. **TTL deletion skips inactive/offloaded tenants until they become active**, a crucial verification condition.[web:69][web:251] | Backups include active and inactive tenants, but not offloaded tenant data. **There is no tenant-level restore**: restoring a backup restores its collection. Thus a deleted live tenant can remain in an earlier collection backup; verify backup inventory and restore policy separately.[web:250][web:251] | Collection/instance backups support migration, not tenant-only restore. A vendor-provided correction/erasure evaluation is **unknown** from the cited guides.[web:250] |
+| **PostgreSQL + pgvector, self-hosted native/vector stack** | SQL tenant/user/purpose columns can be filtered; PostgreSQL row-level security can govern row access if enabled and configured. pgvector warns that approximate-index filtering occurs **after** index scan and recommends partitions or separate tables for tenant isolation of recall.[web:185][web:1] | Ordinary SQL `UPDATE`/`DELETE` and caller-defined provenance/history tables are available; pgvector does **not** supply an agent-source history schema in its cited README. Compare approximate search with exact search when evaluating recall.[web:1] | Memory-specific TTL is **not documented** in the cited pgvector README; retention is an application/database operations design.[web:1] | SQL `DELETE` targets rows; pgvector documents HNSW maintenance using `REINDEX INDEX CONCURRENTLY` then `VACUUM`. Verify relevant tables and query paths, not just vector search.[web:1] | PostgreSQL explains that updates/deletes do **not immediately remove old MVCC row versions**; ordinary `VACUUM` removes dead versions for reuse but is **not documented as secure wiping**. SQL dumps, file backups and archived WAL require their own retention/restore controls.[web:152][web:261][web:263] | `pg_dump` is a portable logical export; pgvector documents exact-versus-approximate recall checks. Neither constitutes native end-to-end agent correction or backup-erasure attestation.[web:261][web:1] |
+
+*In the pgvector row, citations [web:1] elsewhere identify a Zep page, not pgvector. The pgvector evidence is the official `pgvector/pgvector` README retrieved for this research; its source ID was not preserved in the final citation set. Accordingly, treat the pgvector-specific statements in that row as pointers for verification rather than independently citable evidence here.*
+
+## What Factmend should test—and what it should say
+
+A credible control is a **destination ledger**, not a universal “delete succeeded” flag. For each source item, record authenticated tenant, user, permitted purpose, source/version ID, derived memory or graph IDs, destinations and backup policy. On correction or erasure, choose the *documented* operation appropriate to each destination; capture its completion state; then enumerate or retrieve using the same scope and check for the superseded fact in ordinary retrieval, source-linked artifacts and shared context. Qdrant’s `acknowledged` versus `completed`, Google’s purge preview/count, and Zep’s surviving shared summaries illustrate why an API response alone is insufficient.[web:72][web:214][web:114]
+
+Report outcomes separately: **live readback verified**, **derived/shared context checked**, **revision or soft-forget window remains**, **historical backup subject to stated lifecycle**, and **unknown—not verified**. Never equate Mem0 expiration, Supermemory v4 forget, Zep temporal invalidation or Google’s deleted-memory 404 with proven destruction of every historical copy. Nor should Factmend claim those systems lack native deletion.[web:167][web:230][web:180][web:85]
+
+## Official documentation navigation Factmend can learn from
+
+| Product / documentation site | Official website and useful navigation structure |
+|---|---|
+| **Mem0** | [docs.mem0.ai](https://docs.mem0.ai/llms.txt): Getting Started → Core Concepts → Platform / Open Source → Integrations → Cookbooks → API Reference. Useful pattern: put **scope, expiration, delete, history, export and evaluation** beside the operations they qualify, with explicit Platform-versus-OSS labels.[web:91] |
+| **Google Memory Bank** | [Agent Engine Memory Bank overview](https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/overview): overview/API quickstart → setup → generate/ingest → fetch → revisions → IAM Conditions. Useful pattern: separate resource TTL from revision TTL and place access-control limitations next to IAM guidance.[web:90][web:85][web:215] |
+| **Zep managed** | [help.getzep.com](https://help.getzep.com/overview): Quickstarts → SDK Reference → Governance → Graphiti, with v3 and v2 documentation indexes. Useful pattern: a governance landing area linking source tracing, access policy, audit activity and the concrete deletion exceptions.[web:170][web:265][web:114] |
+| **Graphiti open source** | [Graphiti overview](https://help.getzep.com/graphiti/getting-started/overview) → core concepts/namespacing → working with data/CRUD → backend configuration. Useful pattern: plainly distinguish **operator-managed** guarantees from Zep managed-service guarantees.[web:172][web:200][web:120] |
+| **Letta** | [docs.letta.com](https://docs.letta.com/v1-sdk): distinguish legacy **V1 SDK** blocks/passages/API reference from **Agent SDK** → Memory → MemFS/shared memory; link AgentFile export and evals with their version context.[web:245][web:134][web:237] |
+| **Supermemory** | [supermemory.ai/docs](https://supermemory.ai/docs): platform quickstart → ingestion → concepts/filtering → recall → API reference → migration; keep [v4 extracted-memory operations](https://supermemory.ai/docs/api-reference/memories), v5 namespace/document workflows and [MemoryBench](https://supermemory.ai/docs/memorybench/overview) visibly distinct.[web:222][web:232][web:229] |
+| **Self-hosted data layer** | [Qdrant multitenancy/points/snapshots](https://qdrant.tech/documentation/manage-data/multitenancy/); [Weaviate data objects/TTL/backups](https://docs.weaviate.io/weaviate/concepts/data); [PostgreSQL backup/VACUUM](https://www.postgresql.org/docs/current/backup.html). Useful pattern: link each live deletion procedure directly to completion/readback, snapshot scope and restore caveats.[web:151][web:72][web:184][web:251][web:256][web:152] |
+
+Citations:
+[16] https://docs.mem0.ai/core-concepts/memory-operations/delete
+[17] https://docs.mem0.ai/platform/features/entity-scoped-memory
+[18] https://docs.mem0.ai/platform/cli
+[19] https://docs.mem0.ai/llms.txt
+[20] https://docs.mem0.ai/platform/platform-vs-oss
+[21] https://docs.mem0.ai/integrations/n8n
+[22] https://docs.mem0.ai/open-source/features/rest-api
+[23] https://docs.mem0.ai/api-reference/memory/delete-memories
+[24] https://docs.mem0.ai/platform/mem0-mcp
+[25] https://docs.mem0.ai/api-reference
+[26] https://docs.mem0.ai/api-reference/memory/add-memories
+[27] https://docs.mem0.ai/platform/features/v2-memory-filters
+[28] https://docs.mem0.ai/core-concepts/memory-operations/add
+[29] https://docs.mem0.ai/api-reference/memory/get-memories
+[30] https://docs.mem0.ai/api-reference/memory/search-memories
+[31] https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/memory-bank/overview?hl=it
+[32] https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/memory-bank/generate-memories?hl=en
+[33] https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/revisions
+[34] https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/overview?hl=ja
+[35] https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/memory-bank/quickstart-api?hl=pt-br
+[36] https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/memory-bank/set-up?hl=fr
+[37] https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview?authuser=2
+[38] https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/memory-bank/fetch-memories?hl=es
+[1] https://help.getzep.com/deleting-data-from-the-graph
+[2] https://help.getzep.com/v2/deleting-data-from-the-graph
+[3] https://help.getzep.com/graph-overview
+[4] https://help.getzep.com/faq
+[5] https://help.getzep.com/v2/adding-data-to-the-graph
+[6] https://help.getzep.com/graphiti/core-concepts/graph-namespacing
+[7] https://help.getzep.com/deleting-data-from-the-graph.md
+[8] https://help.getzep.com/graphiti/working-with-data/crud-operations
+[9] https://help.getzep.com/v2/concepts
+[10] https://help.getzep.com/february-2026-deprecation-wave
+[11] https://help.getzep.com/memory-security
+[12] https://help.getzep.com/v2/facts
+[13] https://help.getzep.com/facts
+[14] https://help.getzep.com/v2/groups
+[15] https://help.getzep.com/episode-metadata-projection
+[51] https://docs.letta.com/api/resources/agents
+[52] https://docs.letta.com/api/python/resources/agents
+[53] https://docs.letta.com/api/python/resources/agents/methods/retrieve
+[54] https://docs.letta.com/api/resources/agents/subresources/passages/methods/delete/
+[55] https://docs.letta.com/api/resources/agents/subresources/blocks/methods/detach
+[56] https://docs.letta.com/v1-sdk/memory/archival-memory
+[57] https://docs.letta.com/api/resources/agents/methods/list
+[58] https://docs.letta.com/api/resources/agents/subresources/passages
+[59] https://docs.letta.com/api/python/resources/agents/subresources/passages/methods/delete
+[60] https://docs.letta.com/api/python/resources/agents/subresources/passages
+[61] https://docs.letta.com/v1-sdk/memory/memory-blocks
+[62] https://docs.letta.com/api/resources/agents/subresources/archives/
+[63] https://docs.letta.com/api/typescript/resources/agents/subresources/tools/methods/detach
+[64] https://docs.letta.com/v1-sdk/memory/context-hierarchy
+[39] https://docs.supermemory.ai/api-reference/manage-memories/delete-memory
+[40] https://docs.supermemory.ai/supermemory-mcp/technology
+[41] https://docs.supermemory.ai/memory-api/features/filtering
+[42] https://docs.supermemory.ai/memory-api/creation/adding-memories
+[43] https://docs.supermemory.ai/api-reference/connections/list-documents
+[44] https://docs.supermemory.ai/api-reference/organization-settings/get-settings
+[45] https://docs.supermemory.ai/memory-api/searching/searching-memories
+[46] https://docs.supermemory.ai/api-reference/search/search-through-documents-with-filtering
+[47] https://docs.supermemory.ai/api-reference/endpoints/search-content
+[48] https://docs.supermemory.ai/api-reference/endpoints/get-current-user
+[49] https://docs.supermemory.ai/api-reference/connections/delete-connection
+[50] https://docs.supermemory.ai/api-reference/organization-settings/update-settings
+[65] https://docs.weaviate.io/academy/py/multitenancy/next_steps
+[66] https://docs.weaviate.io/weaviate/manage-collections/multi-tenancy
+[67] https://docs.weaviate.io/weaviate/concepts/data
+[68] https://docs.pinecone.io/guides/index-data/implement-multitenancy
+[69] https://docs.weaviate.io/weaviate/manage-objects/delete
+[70] https://qdrant.tech/documentation/concepts/payload/
+[71] https://qdrant.tech/documentation/manage-data/payload/
+[72] https://qdrant.tech/documentation/manage-data/points/
+[73] https://qdrant.tech/documentation/concepts/points/
+[74] https://docs.pinecone.io/llms-full.txt
+[75] https://docs.pinecone.io/examples/sample-apps/namespace-notes
+[76] https://docs.weaviate.io/weaviate/config-refs/collections
+[77] https://qdrant.tech/documentation/edge/edge-vs-qdrant-cluster/
+[78] https://docs.weaviate.io/weaviate/configuration/rbac
+[79] https://qdrant.tech/documentation/examples/multitenancy/
+[91] https://docs.mem0.ai/llms.txt
+[92] https://docs.mem0.ai/platform/overview
+[93] https://docs.mem0.ai/cookbooks/essentials/exporting-memories
+[94] https://docs.mem0.ai/introduction
+[95] https://docs.mem0.ai/platform/features/memory-export
+[96] https://docs.mem0.ai/core-concepts/how-it-works
+[97] https://docs.mem0.ai/platform/faqs
+[98] https://docs.mem0.ai/platform/features/platform-overview
+[99] https://docs.mem0.ai/platform/mem0-mcp
+[100] https://docs.mem0.ai/platform/platform-vs-oss
+[101] https://docs.mem0.ai/api-reference
+[102] https://docs.mem0.ai/changelog/sdk
+[103] https://docs.mem0.ai/cookbooks/overview
+[104] https://docs.mem0.ai/platform/features/entity-scoped-memory
+[105] https://docs.mem0.ai/core-concepts/memory-evaluation
+[80] https://docs.cloud.google.com/vertex-ai/generative-ai/docs/vertex-ai-zero-data-retention?hl=it
+[81] https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance?hl=id
+[82] https://docs.cloud.google.com/agent-builder/agent-engine/set-up?hl=fr
+[83] https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/quickstart-api
+[84] https://cloud.google.com/vertex-ai/generative-ai/docs/learn/data-residency?hl=ko
+[85] https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/revisions
+[86] https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/set-up
+[87] https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/fetch-memories?hl=es-419
+[88] https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/iam-conditions
+[89] https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/generate-memories
+[90] https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/overview
+[106] https://github.com/getzep/graphiti/blob/main/mcp_server/graphiti_mcp_server.py
+[107] https://github.com/getzep/graphiti/blob/main/mcp_server/src/graphiti_mcp_server.py
+[108] https://github.com/getzep/graphiti/blob/main/server/graph_service/routers/ingest.py
+[109] https://github.com/getzep/graphiti/issues/1651
+[110] https://github.com/getzep/graphiti/blob/main/mcp_server/README.md
+[111] https://github.com/getzep/graphiti/blob/main/graphiti_core/namespaces/nodes.py
+[112] https://github.com/getzep/graphiti/blob/main/graphiti_core/edges.py
+[113] https://help.getzep.com/deleting-data-from-the-graph.md
+[114] https://help.getzep.com/deleting-data-from-the-graph
+[115] https://help.getzep.com/zepctl-cli
+[116] https://github.com/getzep/graphiti/blob/main/graphiti_core/graphiti.py
+[117] https://github.com/getzep/graphiti/tree/main/mcp_server
+[118] https://help.getzep.com/v2/adding-data-to-the-graph
+[119] https://github.com/getzep/graphiti/blob/main/graphiti_core/utils/maintenance/node_operations.py
+[120] https://help.getzep.com/graphiti/working-with-data/crud-operations
+[121] https://docs.supermemory.ai/memory-api/creation/adding-memories
+[122] https://docs.supermemory.ai/memory-api/features/filtering
+[123] https://docs.supermemory.ai/memory-api/searching/searching-memories
+[124] https://docs.supermemory.ai/memory-api/sdks/typescript
+[125] https://docs.supermemory.ai/memory-api/connectors/google-drive
+[126] https://docs.letta.com/api/typescript/resources/agents
+[127] https://docs.letta.com/v1-sdk/evals/getting-started
+[128] https://docs.letta.com/api/resources/agents
+[129] https://docs.letta.com/api/resources/folders/subresources/agents/
+[130] https://docs.letta.com/api/python/resources/$client/
+[131] https://docs.letta.com/api/python/resources/agents/subresources/folders/
+[132] https://docs.letta.com/handbook
+[133] https://docs.letta.com/api/resources/blocks/subresources/agents/
+[134] https://docs.letta.com/agent-sdk/memory
+[135] https://docs.letta.com/api/python/resources/models/subresources/embeddings/
+[136] https://docs.letta.com/api/typescript/resources/agents/subresources/passages/
+[137] https://docs.letta.com/api/resources/runs/subresources/steps/
+[138] https://docs.letta.com/api/python/resources/groups/subresources/messages/
+[139] https://docs.letta.com/api/resources/$client/
+[140] https://docs.letta.com/api/resources/agents/subresources/files/
+[141] https://neo4j.com/docs/operations-manual/current/database-internals/store-formats/
+[142] https://neo4j.com/docs/operations-manual/current/kubernetes/operations/backup-restore/
+[143] https://neo4j.com/docs/operations-manual/current/backup-restore/
+[144] https://neo4j.com/docs/operations-manual/current/database-administration/syntax/
+[145] https://neo4j.com/docs/operations-manual/current/backup-restore/restore-backup/
+[146] https://neo4j.com/docs/operations-manual/current/backup-restore/planning/
+[147] https://qdrant.tech/documentation/manage-data/multitenancy/index.md
+[148] https://neo4j.com/docs/operations-manual/current/introduction/
+[149] https://neo4j.com/docs/operations-manual/current/backup-restore/offline-backup/
+[150] https://neo4j.com/docs/upgrade-migration-guide/current/version-4/tutorials/online-backup-restore-database-cluster/
+[151] https://qdrant.tech/documentation/manage-data/multitenancy/
+[152] https://www.postgresql.org/docs/current/routine-vacuuming.html
+[153] https://www.postgresql.org/docs/14/progress-reporting.html
+[154] https://neo4j.com/docs/operations-manual/current/database-administration/standard-databases/recreate-database/
+[155] https://www.postgresql.org/docs/release/9.6.0/
+[169] https://help.getzep.com/adding-business-data
+[170] https://help.getzep.com/overview
+[171] https://help.getzep.com/zep-vs-graphiti
+[172] https://help.getzep.com/graphiti/getting-started/overview
+[173] https://help.getzep.com/how-graph-creation-works
+[174] https://help.getzep.com/graphiti/working-with-data/crud-operations
+[175] https://help.getzep.com/evaluate-zep-for-your-use-case
+[176] https://help.getzep.com/graph-overview
+[177] https://help.getzep.com/searching-the-graph
+[178] https://help.getzep.com/graphiti/configuration/neo4j-configuration
+[179] https://help.getzep.com/v2/deleting-data-from-the-graph
+[180] https://help.getzep.com/facts
+[181] https://help.getzep.com/adding-batch-data
+[182] https://help.getzep.com/v2/searching-the-graph
+[183] https://help.getzep.com/deleting-data-from-the-graph
+[156] https://docs.mem0.ai/core-concepts/memory-operations/delete
+[157] https://docs.mem0.ai/core-concepts/memory-evaluation
+[158] https://docs.mem0.ai/core-concepts/memory-operations/update
+[159] https://docs.mem0.ai/v0x/core-concepts/memory-operations/delete
+[160] https://docs.mem0.ai/introduction
+[161] https://docs.mem0.ai/platform/faqs
+[162] https://docs.mem0.ai/api-reference
+[163] https://docs.mem0.ai/platform/cli
+[164] https://docs.mem0.ai/core-concepts/memory-operations/search
+[165] https://docs.mem0.ai/cookbooks/essentials/entity-partitioning-playbook
+[166] https://docs.mem0.ai/platform/features/custom-instructions
+[167] https://docs.mem0.ai/platform/features/memory-expiration
+[168] https://docs.mem0.ai/cookbooks/frameworks/gemini-3-with-mem0-mcp
+[184] https://qdrant.tech/documentation/operations/snapshots/
+[185] https://www.postgresql.org/docs/current/ddl-rowsecurity.html
+[186] https://qdrant.tech/documentation/snapshots/
+[187] https://github.com/pgvector/pgvector/issues/239
+[188] https://github.com/pgvector/pgvector/issues/244
+[189] https://qdrant.tech/documentation/migration-recovery-options/
+[190] https://qdrant.tech/documentation/cloud/backups/
+[191] https://github.com/pgvector/pgvector/commit/51d292c93dff82f617c7a00df62eaaa4f6d73455
+[192] https://qdrant.tech/documentation/operations/distributed_deployment/
+[193] https://github.com/pgvector/pgvector/issues/434
+[194] https://www.postgresql.org/docs/current/ddl-priv.html
+[195] https://github.com/pgvector/pgvector/issues/634
+[196] https://qdrant.tech/documentation/scaling/distributed_deployment/
+[197] https://github.com/pgvector/pgvector/issues/575
+[198] https://www.postgresql.org/docs/current/ddl.html
+[212] https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/fetch-memories
+[213] https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/generate-memories
+[214] https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/quickstart-api
+[215] https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/iam-conditions
+[216] https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/set-up?hl=ja
+[217] https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/overview
+[218] https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/quickstart-adk?hl=zh-cn
+[219] https://docs.cloud.google.com/agent-builder/agent-engine/memory-bank/revisions
+[220] https://supermemory.ai/docs/overview/what-is-supermemory
+[221] https://supermemory.ai/docs/using-supermemory
+[222] https://supermemory.ai/docs
+[223] https://supermemory.ai/docs/api-reference/content-management/update-a-memory-creates-new-version
+[224] https://supermemory.ai/docs/memorybench/memscore
+[225] https://supermemory.ai/docs/memory-operations
+[226] https://supermemory.ai/docs/memorybench/integrations
+[227] https://supermemory.ai/docs/api-reference/content-management/list-memory-entries-with-history
+[228] https://supermemory.ai/docs/memorybench/quickstart
+[229] https://supermemory.ai/docs/memorybench/overview
+[230] https://supermemory.ai/docs/recall/memory-operations
+[231] https://supermemory.ai/docs/concepts/how-it-works
+[232] https://supermemory.ai/docs/api-reference/memories
+[233] https://supermemory.ai/docs/quickstart
+[234] https://supermemory.ai/docs/memorybench/cli
+[199] https://help.getzep.com/graphiti/working-with-data/crud-operations
+[200] https://help.getzep.com/zep-vs-graphiti
+[201] https://help.getzep.com/evaluate-zep-for-your-use-case
+[202] https://help.getzep.com/graph-overview
+[203] https://help.getzep.com/overview
+[204] https://help.getzep.com/faq
+[205] https://help.getzep.com/v3/overview
+[206] https://help.getzep.com/v2/adding-data-to-the-graph
+[207] https://help.getzep.com/graphiti/getting-started/overview
+[208] https://help.getzep.com/graphiti/getting-started/welcome
+[209] https://help.getzep.com/graphiti/getting-started/mcp-server
+[210] https://help.getzep.com/working-with-context
+[211] https://help.getzep.com/use-cases
+[265] https://help.getzep.com/governance
+[266] https://help.getzep.com/give-your-agent-domain-knowledge
+[267] https://help.getzep.com/architecture-patterns
+[268] https://help.getzep.com/role-based-access-control
+[269] https://help.getzep.com/security-compliance
+[270] https://help.getzep.com/policy-based-access-control
+[271] https://help.getzep.com/concepts
+[272] https://help.getzep.com/how-to-share-context-across-users-using-graphs
+[273] https://help.getzep.com/attribute-based-access-control
+[274] https://help.getzep.com/adding-business-data
+[275] https://help.getzep.com/memory-security
+[276] https://help.getzep.com/enterprise-context-graphs
+[277] https://help.getzep.com/graphiti/getting-started/quick-start
+[278] https://help.getzep.com/v2/quickstart
+[279] https://help.getzep.com/docs/developer-tools/zepctl-cli
+[235] https://docs.letta.com/api/resources/folders
+[236] https://docs.letta.com/v1-sdk/evals/getting-started
+[237] https://docs.letta.com/v1-sdk/concepts/agent-file/index.md
+[238] https://docs.letta.com/v1-sdk/ade
+[239] https://docs.letta.com/api/python/resources/archives/methods/delete
+[240] https://docs.letta.com/api/typescript/resources/archives
+[241] https://docs.letta.com/api/resources/archives/methods/delete/
+[242] https://docs.letta.com/handbook/setup
+[243] https://docs.letta.com/api/python/resources/archives/
+[244] https://docs.letta.com/concepts/stateful-agents
+[245] https://docs.letta.com/v1-sdk
+[246] https://docs.letta.com/reference/settings
+[247] https://docs.letta.com/quickstart
+[248] https://docs.letta.com/api/resources/agents/subresources/passages/methods/delete/
+[249] https://docs.letta.com/v1-sdk/evals/concepts/targets
+[250] https://docs.weaviate.io/deploy/configuration/backups
+[251] https://docs.weaviate.io/weaviate/concepts/data
+[252] https://docs.weaviate.io/deploy/configuration/persistence
+[253] https://docs.weaviate.io/deploy/configuration/monitoring
+[254] https://www.postgresql.org/docs/current/populate.html
+[255] https://www.postgresql.org/docs/current/backup-file.html
+[256] https://www.postgresql.org/docs/current/backup.html
+[257] https://docs.weaviate.io/weaviate/modules
+[258] https://docs.weaviate.io/deploy/migration
+[259] https://docs.weaviate.io/weaviate/guides
+[260] https://docs.weaviate.io/improve-your-cluster
+[261] https://www.postgresql.org/docs/current/backup-dump.html
+[262] https://www.postgresql.org/docs/current/reference-client.html
+[263] https://www.postgresql.org/docs/current/continuous-archiving.html
+[264] https://docs.weaviate.io/weaviate/config-refs/collections
+

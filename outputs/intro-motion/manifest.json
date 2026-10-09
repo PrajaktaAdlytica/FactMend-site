@@ -1,0 +1,17 @@
+{
+  "selection": "Living Memory Terrain, option 2 from intro-visual-directions-v2",
+  "reference": "outputs/intro-visual-directions-v2/02-living-memory-terrain.png",
+  "assets": [
+    {
+      "file": "living-memory-terrain.png",
+      "purpose": "Clean background plate with all baked-in interface removed; generated using the selected image as reference.",
+      "web": "website/public/assets/images/intro/living-memory-terrain.webp"
+    },
+    {
+      "file": "valley-mist.png",
+      "purpose": "Transparent sunrise valley mist for two independently moving cloud layers.",
+      "web": "website/public/assets/images/intro/valley-mist.webp"
+    }
+  ],
+  "motion": "GSAP cloud drift and shallow scroll camera; WebGL light samples original amber pixels and travels along the geological seam. No replacement geometry, no video download, no loading gate."
+}

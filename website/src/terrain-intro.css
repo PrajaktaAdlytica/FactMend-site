@@ -1,0 +1,110 @@
+.terrain-intro {
+  isolation: isolate;
+  height: 100svh;
+  min-height: 640px;
+  padding: clamp(64px, 6.5vw, 100px) 0 0;
+  overflow: hidden;
+  background: #f7ead7;
+}
+.terrain-landscape, .terrain-readability {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+}
+.terrain-landscape { transform-origin: center 70%; }
+.terrain-plate, .terrain-seam-light {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+.terrain-seam-light { pointer-events: none; }
+.terrain-mist {
+  position: absolute;
+  width: 85%;
+  height: 27%;
+  max-width: none;
+  object-fit: fill;
+  filter: blur(2px);
+  mask-image: linear-gradient(90deg,transparent,#000 15%,#000 75%,transparent);
+  opacity: 0.2;
+}
+.terrain-mist-far { top: 37%; left: 6%; }
+.terrain-mist-near { top: 51%; left: -18%; width: 76%; height: 24%; }
+.terrain-readability {
+  z-index: -1;
+  background: linear-gradient(110deg,rgba(247,244,236,.35),transparent 61%);
+}
+.terrain-content { position: relative; }
+.terrain-content h1 {
+  font-size: clamp(68px,7.3vw,110px);
+  line-height: .97;
+  letter-spacing: -.035em;
+  max-width: 950px;
+}
+.terrain-content h1 em { font-weight: 400; }
+.terrain-content > p {
+  margin: 26px 0 0;
+  max-width: 560px;
+  color: var(--ink);
+  font-size: clamp(16px,1.65vw,23px);
+  line-height: 1.42;
+  letter-spacing: -.025em;
+}
+.terrain-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 30px; }
+.terrain-actions .button { min-height: 52px; border-radius: 6px; gap: 18px; }
+.terrain-actions .secondary { background: #f7f4ec8c; border-color: #59634b; backdrop-filter: blur(6px); }
+.terrain-actions .secondary:hover { background: #f7f4ecb3; }
+.terrain-controls {
+  position: absolute;
+  left: 0; right: 0; bottom: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.terrain-controls a, .terrain-controls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--paper);
+  border: 1px solid #f7f4ec55;
+  border-radius: 100px;
+  min-height: 44px;
+  padding: 10px 18px;
+  font-size: 12px;
+  font-weight: 500;
+  background: #1f2617d9;
+  backdrop-filter: blur(10px);
+  transition: background .25s, border-color .25s;
+}
+.terrain-controls a:hover, .terrain-controls button:hover { background: var(--ink); border-color: var(--amber); }
+.terrain-controls :focus-visible { outline-color: var(--amber); }
+.terrain-skip span { font-size: 18px; line-height: 1; }
+.terrain-pause-symbol { width: 8px; height: 11px; border-left: 2px solid currentColor; border-right: 2px solid currentColor; }
+.terrain-play-symbol { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid currentColor; }
+#home-hero { scroll-margin-top: 0; outline: none; }
+@media (max-width: 999px) {
+  .terrain-intro { min-height: 690px; }
+  .terrain-content h1 { font-size: clamp(64px,8.5vw,90px); }
+}
+@media (max-width: 600px) {
+  .terrain-intro { min-height: 660px; padding-top: 64px; }
+  .terrain-content h1 { font-size: clamp(44px,13.34vw,72px); line-height: 1; max-width: 430px; }
+  .terrain-content h1 em { display: inline-block; max-width: 360px; }
+  .terrain-content > p { margin-top: 22px; max-width: 330px; font-size: 16px; line-height: 1.5; }
+  .terrain-actions { gap: 12px; margin-top: 24px; flex-direction: column; align-items: flex-start; }
+  .terrain-actions .button { font-size: 13px; min-height: 46px; padding: 12px 17px; }
+  .terrain-readability { background: linear-gradient(180deg,#f7f4ecb3, #f7f4ec38 50%,transparent 68%); }
+  .terrain-plate { object-position: 65% 50%; }
+  .terrain-mist-far { top: 48%; width: 140%; left: -45%; height: 18%; }
+  .terrain-mist-near { top: 65%; width: 140%; left: -80%; height: 17%; }
+  .terrain-controls { bottom: 20px; }
+  .terrain-controls a, .terrain-controls button { padding: 10px 14px; font-size: 11px; gap: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .terrain-landscape { transform: none !important; }
+}
+[data-reduced-motion="true"] .terrain-landscape { transform: none !important; }

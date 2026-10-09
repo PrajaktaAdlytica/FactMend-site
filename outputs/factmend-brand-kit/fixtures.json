@@ -1,0 +1,58 @@
+{
+  "records": [
+    {
+      "id": "C-012",
+      "scope": "Helio / support",
+      "record": "portal only",
+      "state": "Current"
+    },
+    {
+      "id": "C-013",
+      "scope": "Helio / support",
+      "record": "backup boundary",
+      "state": "Unverified"
+    },
+    {
+      "id": "C-014",
+      "scope": "Helio / support",
+      "record": "source mismatch",
+      "state": "Needs review"
+    },
+    {
+      "id": "C-015",
+      "scope": "Other tenant / support",
+      "record": "cross-tenant request",
+      "state": "Denied"
+    },
+    {
+      "id": "C-016",
+      "scope": "Helio / support",
+      "record": "destination check",
+      "state": "Error"
+    },
+    {
+      "id": "C-017",
+      "scope": "Helio / support",
+      "record": "30-day policy",
+      "state": "Current"
+    },
+    {
+      "id": "C-018",
+      "scope": "Helio / migration",
+      "record": "portable manifest",
+      "state": "Needs review"
+    },
+    {
+      "id": "C-019",
+      "scope": "Helio / support",
+      "record": "consent update",
+      "state": "Unverified"
+    }
+  ],
+  "receipt": {
+    "overall": "Partial",
+    "Index A": "Simulated clear",
+    "Cache B": "Simulated clear",
+    "Backup": "Unverified"
+  }
+}

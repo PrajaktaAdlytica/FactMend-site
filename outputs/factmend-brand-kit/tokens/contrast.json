@@ -1,0 +1,47 @@
+[
+  {
+    "foreground": "ink",
+    "background": "paper",
+    "ratio": 14.18
+  },
+  {
+    "foreground": "muted",
+    "background": "paper",
+    "ratio": 5.77
+  },
+  {
+    "foreground": "ink",
+    "background": "amber",
+    "ratio": 7.04
+  },
+  {
+    "foreground": "paper",
+    "background": "ink",
+    "ratio": 14.18
+  },
+  {
+    "foreground": "clay",
+    "background": "paper",
+    "ratio": 5.23
+  },
+  {
+    "foreground": "link",
+    "background": "paper",
+    "ratio": 6.42
+  },
+  {
+    "foreground": "ink",
+    "background": "peach",
+    "ratio": 10.27
+  },
+  {
+    "foreground": "strongLine",
+    "background": "white",
+    "ratio": 4.03
+  },
+  {
+    "foreground": "white",
+    "background": "amber",
+    "ratio": 2.21
+  }
+]
