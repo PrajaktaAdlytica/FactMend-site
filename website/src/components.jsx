@@ -287,6 +287,11 @@ export function Footer() {
             <br />
             with what AI remembers.
           </p>
+          <address className="footer-address">
+            355 Nguyen Trong Tuyen St.<br />
+            Ward 1, Tan Binh District<br />
+            Ho Chi Minh City 790282, Vietnam
+          </address>
           <div className="socials">
             <span
               title="LinkedIn company profile is not available"

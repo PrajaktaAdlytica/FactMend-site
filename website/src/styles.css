@@ -567,6 +567,28 @@ main {
 .home-hero .wrap {
   position: relative;
 }
+.funding-announcement {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin: 0 0 36px;
+  padding: 10px 14px;
+  border: 1px solid #b5b8a7;
+  border-radius: 4px;
+  background: rgba(247, 244, 236, 0.88);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.funding-announcement-mark {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--amber);
+}
+.funding-announcement > span:last-child {
+  color: var(--muted);
+}
 .hero-copy > .eyebrow {
   margin-bottom: 22px;
 }
@@ -2631,6 +2653,19 @@ td a {
   font-size: 11px;
   color: var(--muted);
 }
+.company-address {
+  margin: 24px 0;
+  font-size: 14px;
+  font-style: normal;
+  line-height: 1.65;
+}
+.company-address strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
 /* Commercial, resources and legal */
 .pricing-section {
   padding-top: 0;
@@ -3574,6 +3609,13 @@ footer {
   font-size: 13px;
   color: #c5cbbb;
   margin: 25px 0;
+}
+.footer-address {
+  margin: 0 0 24px;
+  color: #c5cbbb;
+  font-size: 11px;
+  font-style: normal;
+  line-height: 1.7;
 }
 .footer-top h4 {
   font-size: 11px;

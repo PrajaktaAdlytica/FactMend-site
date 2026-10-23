@@ -326,6 +326,11 @@ export default function Home() {
           loading="lazy"
         />
         <div className="wrap">
+          <p className="funding-announcement" data-reveal>
+            <span className="funding-announcement-mark" aria-hidden="true" />
+            Factmend has secured venture capital funding.
+            <span>Investor and funding details to follow.</span>
+          </p>
           <div className="hero-copy" data-reveal>
             <p className="eyebrow">
               <span className="amber-dash" /> Memory governance for persistent

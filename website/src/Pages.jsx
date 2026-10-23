@@ -945,6 +945,14 @@ function CompanySections() {
               shaping focused evaluations around the boundaries teams need to
               understand.
             </p>
+            <address className="company-address">
+              <strong>Company address</strong>
+              355 Nguyen Trong Tuyen St.<br />
+              Ward 1<br />
+              Tan Binh District<br />
+              Ho Chi Minh City 790282<br />
+              Vietnam
+            </address>
             <TextLink to="/contact">Start a conversation</TextLink>
           </div>
           <div className="company-record" data-reveal>
